@@ -1,0 +1,2 @@
+darkWatch.version=${pom.version}
+darkWatch.build.date=${timestamp}

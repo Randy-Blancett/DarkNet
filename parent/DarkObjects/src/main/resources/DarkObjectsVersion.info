@@ -1,0 +1,2 @@
+darkObjects.version=${pom.version}
+darkObjects.build.date=${timestamp}

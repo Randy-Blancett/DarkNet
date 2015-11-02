@@ -16,4 +16,15 @@ public class CommandLineOptionsTest {
 		assertEquals("Shows Help Menu", CommandLineOptons.HELP.getDescription());
 	}
 
+	@Test
+	public void testVersion() {
+		// Help
+		assertEquals("v", CommandLineOptons.VERSION.getFlag());
+		assertEquals("version", CommandLineOptons.VERSION.getFull());
+		assertEquals(false, CommandLineOptons.VERSION.hasArg());
+		assertEquals("-v", CommandLineOptons.VERSION.getComandLineFlag());
+		assertEquals("Shows Version Information",
+				CommandLineOptons.VERSION.getDescription());
+	}
+
 }
