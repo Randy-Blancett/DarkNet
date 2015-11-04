@@ -29,15 +29,22 @@ public class WatchConfigTest {
 
 	@Test
 	public void testGetString() {
-		assertEquals("UTestDate",
-				WatchConfig.getString(WatchConfig.BUILD_DATE_DARK_OBJECTS));
-		assertEquals("UTest.0.1",
-				WatchConfig.getString(WatchConfig.BUILD_VERSION_DARK_OBJECTS));
+		assertEquals(
+				"UTestDate",
+				WatchConfig
+						.getString(WatchConfig.PROPERTY_BUILD_DATE_DARK_OBJECTS));
+		assertEquals(
+				"UTest.0.1",
+				WatchConfig
+						.getString(WatchConfig.PROPERTY_BUILD_VERSION_DARK_OBJECTS));
 
 		assertEquals("WatchDate",
-				WatchConfig.getString(WatchConfig.BUILD_DATE_DARK_WATCH));
-		assertEquals("Watch.0.1",
-				WatchConfig.getString(WatchConfig.BUILD_VERSION_DARK_WATCH));
+				WatchConfig
+						.getString(WatchConfig.PROPERTY_BUILD_DATE_DARK_WATCH));
+		assertEquals(
+				"Watch.0.1",
+				WatchConfig
+						.getString(WatchConfig.PROPERTY_BUILD_VERSION_DARK_WATCH));
 	}
 
 	@Test
@@ -54,5 +61,4 @@ public class WatchConfigTest {
 
 	}
 
-	
 }

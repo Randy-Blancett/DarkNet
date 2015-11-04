@@ -21,11 +21,11 @@ public class WatchConfig extends Configuration {
 	/**
 	 * Date Data Watch was built
 	 */
-	public static final String BUILD_DATE_DARK_WATCH = "darkWatch.build.date";
+	public static final String PROPERTY_BUILD_DATE_DARK_WATCH = "darkWatch.build.date";
 	/**
 	 * Version of Data Watch
 	 */
-	public static final String BUILD_VERSION_DARK_WATCH = "darkWatch.version";
+	public static final String PROPERTY_BUILD_VERSION_DARK_WATCH = "darkWatch.version";
 	private final static Logger LOGGER = LogManager
 			.getLogger(Configuration.class);
 
@@ -38,12 +38,17 @@ public class WatchConfig extends Configuration {
 	 * @return get the version string
 	 */
 	public static String getVersionString() {
-		return Configuration.getVersionString(
-				"Dark Watch",
-				new ImmutablePair<String, String>("Version", Configuration
-						.getString(WatchConfig.BUILD_VERSION_DARK_WATCH)),
-				new ImmutablePair<String, String>("Date", Configuration
-						.getString(WatchConfig.BUILD_DATE_DARK_WATCH)))
+		return Configuration
+				.getVersionString(
+						"Dark Watch",
+						new ImmutablePair<String, String>(
+								"Version",
+								Configuration
+										.getString(WatchConfig.PROPERTY_BUILD_VERSION_DARK_WATCH)),
+						new ImmutablePair<String, String>(
+								"Date",
+								Configuration
+										.getString(WatchConfig.PROPERTY_BUILD_DATE_DARK_WATCH)))
 				+ Configuration.getVersionString();
 	}
 

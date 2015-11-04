@@ -8,6 +8,8 @@ package net.darkowl.darkNet.darkWatch;
  * 
  */
 public enum CommandLineOptons {
+	CONFIG("c", "config", true, "Location of the configuration properties file"),
+
 	HELP("h", "help", false, "Shows Help Menu"),
 
 	VERSION("v", "version", false, "Shows Version Information");

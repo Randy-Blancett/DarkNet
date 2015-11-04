@@ -73,6 +73,8 @@ public class DarkWatch {
 				return;
 			}
 
+			setConfig(cmd);
+
 			WatchConfig.init();
 
 			if (cmd.hasOption(CommandLineOptons.VERSION.getFlag())) {
@@ -82,6 +84,12 @@ public class DarkWatch {
 		} catch (final ParseException e) {
 			DarkWatch.LOGGER.error("Failed to parse Command Line Arguments", e);
 		}
+	}
 
+	private void setConfig(CommandLine cmd) {
+		if (cmd.hasOption(CommandLineOptons.CONFIG.getFlag())) {
+			System.setProperty(WatchConfig.PROPERTY_CONFIG_PATH,
+					cmd.getOptionValue(CommandLineOptons.CONFIG.getFlag()));
+		}
 	}
 }
