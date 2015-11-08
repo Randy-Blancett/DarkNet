@@ -25,6 +25,15 @@ public class DarkWatchException extends Exception {
 	}
 
 	/**
+	 * @since Nov 4, 2015
+	 * @param message
+	 *            Message to be displayed
+	 */
+	public DarkWatchException(String message) {
+		super(message);
+	}
+
+	/**
 	 * @since Nov 5, 2015
 	 * @param message
 	 *            message to attatch
@@ -34,15 +43,6 @@ public class DarkWatchException extends Exception {
 	public DarkWatchException(String message, Throwable cause) {
 		super(message, cause);
 		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @since Nov 4, 2015
-	 * @param message
-	 *            Message to be displayed
-	 */
-	public DarkWatchException(String message) {
-		super(message);
 	}
 
 }

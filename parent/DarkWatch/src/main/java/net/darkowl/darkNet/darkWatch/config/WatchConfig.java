@@ -19,6 +19,8 @@ import org.apache.logging.log4j.Logger;
  * 
  */
 public class WatchConfig extends Configuration {
+	private final static Logger LOGGER = LogManager
+			.getLogger(Configuration.class);
 	/**
 	 * Date Data Watch was built
 	 */
@@ -27,13 +29,11 @@ public class WatchConfig extends Configuration {
 	 * Version of Data Watch
 	 */
 	public static final String PROPERTY_BUILD_VERSION_DARK_WATCH = "darkWatch.version";
+
 	/**
 	 * The location where the program can find the XML configration file;
 	 */
 	public static final String PROPERTY_XML_FILE_LOCATION = "config.xml.location";
-
-	private final static Logger LOGGER = LogManager
-			.getLogger(Configuration.class);
 
 	private static final String VERSION_FILE_NAME = "/DarkWatchVersion.info";
 
@@ -69,8 +69,8 @@ public class WatchConfig extends Configuration {
 		try {
 			Configuration.loadProps(DarkWatch.class
 					.getResourceAsStream("/default.properties"));
-		} catch (IOException e) {
-			LOGGER.error("Failed to load Default Properties",e);
+		} catch (final IOException e) {
+			WatchConfig.LOGGER.error("Failed to load Default Properties", e);
 		}
 		Configuration.init();
 

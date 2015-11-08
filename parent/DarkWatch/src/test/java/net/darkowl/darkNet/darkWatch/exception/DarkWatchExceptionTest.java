@@ -3,10 +3,10 @@
  */
 package net.darkowl.darkNet.darkWatch.exception;
 
-import static org.junit.Assert.*;
 import net.darkowl.darkNet.darkWatch.exceptions.DarkWatchException;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,13 +36,13 @@ public class DarkWatchExceptionTest {
 	@Test
 	public void testConstructor() {
 		DarkWatchException exception = new DarkWatchException();
-		assertTrue(exception instanceof Exception);
-		assertTrue(exception instanceof DarkWatchException);
+		Assert.assertTrue(exception instanceof Exception);
+		Assert.assertTrue(exception instanceof DarkWatchException);
 
 		exception = new DarkWatchException("Test Message!");
-		assertTrue(exception instanceof Exception);
-		assertTrue(exception instanceof DarkWatchException);
-		assertEquals("Test Message!", exception.getMessage());
+		Assert.assertTrue(exception instanceof Exception);
+		Assert.assertTrue(exception instanceof DarkWatchException);
+		Assert.assertEquals("Test Message!", exception.getMessage());
 	}
 
 }

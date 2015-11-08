@@ -3,10 +3,10 @@
  */
 package net.darkowl.darkNet.darkObjects.devices;
 
-import static org.junit.Assert.*;
 import net.darkowl.darkNet.darkObjects.interfaces.DarkDevice;
 import net.darkowl.darkNet.darkObjects.interfaces.Monitorable;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.quartz.Job;
 
@@ -19,13 +19,13 @@ public class RadioThermostatTest {
 
 	@Test
 	public void ConstructorTest() {
-		RadioThermostat obj = new RadioThermostat("test1");
-		assertTrue(obj instanceof DarkDevice);
-		assertTrue(obj instanceof Monitorable);
-		assertTrue(obj instanceof BaseDarkDevice);
-		assertTrue(obj instanceof Job);
+		final RadioThermostat obj = new RadioThermostat("test1");
+		Assert.assertTrue(obj instanceof DarkDevice);
+		Assert.assertTrue(obj instanceof Monitorable);
+		Assert.assertTrue(obj instanceof BaseDarkDevice);
+		Assert.assertTrue(obj instanceof Job);
 
-		assertEquals("test1", obj.getDeviceName());
+		Assert.assertEquals("test1", obj.getDeviceName());
 	}
 
 }

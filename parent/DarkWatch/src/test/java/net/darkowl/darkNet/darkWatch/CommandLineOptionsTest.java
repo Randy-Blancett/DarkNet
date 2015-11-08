@@ -1,7 +1,6 @@
 package net.darkowl.darkNet.darkWatch;
 
-import static org.junit.Assert.assertEquals;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 public class CommandLineOptionsTest {
@@ -9,21 +8,22 @@ public class CommandLineOptionsTest {
 	@Test
 	public void testHelp() {
 		// Help
-		assertEquals("h", CommandLineOptons.HELP.getFlag());
-		assertEquals("help", CommandLineOptons.HELP.getFull());
-		assertEquals(false, CommandLineOptons.HELP.hasArg());
-		assertEquals("-h", CommandLineOptons.HELP.getComandLineFlag());
-		assertEquals("Shows Help Menu", CommandLineOptons.HELP.getDescription());
+		Assert.assertEquals("h", CommandLineOptons.HELP.getFlag());
+		Assert.assertEquals("help", CommandLineOptons.HELP.getFull());
+		Assert.assertEquals(false, CommandLineOptons.HELP.hasArg());
+		Assert.assertEquals("-h", CommandLineOptons.HELP.getComandLineFlag());
+		Assert.assertEquals("Shows Help Menu",
+				CommandLineOptons.HELP.getDescription());
 	}
 
 	@Test
 	public void testVersion() {
 		// Help
-		assertEquals("v", CommandLineOptons.VERSION.getFlag());
-		assertEquals("version", CommandLineOptons.VERSION.getFull());
-		assertEquals(false, CommandLineOptons.VERSION.hasArg());
-		assertEquals("-v", CommandLineOptons.VERSION.getComandLineFlag());
-		assertEquals("Shows Version Information",
+		Assert.assertEquals("v", CommandLineOptons.VERSION.getFlag());
+		Assert.assertEquals("version", CommandLineOptons.VERSION.getFull());
+		Assert.assertEquals(false, CommandLineOptons.VERSION.hasArg());
+		Assert.assertEquals("-v", CommandLineOptons.VERSION.getComandLineFlag());
+		Assert.assertEquals("Shows Version Information",
 				CommandLineOptons.VERSION.getDescription());
 	}
 

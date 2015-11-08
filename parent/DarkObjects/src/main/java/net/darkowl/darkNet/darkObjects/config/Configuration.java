@@ -22,30 +22,35 @@ import org.apache.logging.log4j.Logger;
  * 
  */
 public class Configuration {
+	protected static boolean loaded = false;
+
+	private final static Logger LOGGER = LogManager
+			.getLogger(Configuration.class);
+	protected static Properties properties = (Properties) System
+			.getProperties().clone();
 	/**
 	 * Date of the Dark Objects Build
 	 */
 	public static final String PROPERTY_BUILD_DATE_DARK_OBJECTS = "darkObjects.build.date";
 
 	/**
-	 * Version of the Dark Objects
-	 */
-	public static final String PROPERTY_BUILD_VERSION_DARK_OBJECTS = "darkObjects.version";
-	/**
 	 * Location of the build info
 	 */
 	public static final String PROPERTY_BUILD_FILE_LOCATION_DARK_OBJECTS = "darkObjects.version";
 	/**
+	 * Version of the Dark Objects
+	 */
+	public static final String PROPERTY_BUILD_VERSION_DARK_OBJECTS = "darkObjects.version";
+	/**
 	 * The path to the default configuration properties file
 	 */
 	public static final String PROPERTY_CONFIG_PATH = "configuration.path";
-
-	protected static boolean loaded = false;
-	private final static Logger LOGGER = LogManager
-			.getLogger(Configuration.class);
-	protected static Properties properties = (Properties) System
-			.getProperties().clone();
 	private static final String VERSION_FILE_NAME = "/DarkObjectsVersion.info";
+
+	public static void clearProperties() {
+		Configuration.properties = System.getProperties();
+		Configuration.loaded = false;
+	}
 
 	/**
 	 * Get a property as a string
@@ -57,11 +62,6 @@ public class Configuration {
 	 */
 	public static String getString(String property) {
 		return Configuration.properties.getProperty(property);
-	}
-
-	public static void clearProperties() {
-		properties = System.getProperties();
-		loaded = false;
 	}
 
 	/**
@@ -113,15 +113,22 @@ public class Configuration {
 	}
 
 	/**
-	 * Load enviroment properties
+	 * Load properties to memory
 	 * 
-	 * @since Nov 3, 2015
+	 * @since Oct 31, 2015
+	 * @throws IOException
+	 *             Exception if we cant load the property file
 	 */
-	protected static void loadEnvProperties() {
-		for (final Entry<String, String> prop : System.getenv().entrySet()) {
-			Configuration.properties
-					.setProperty(prop.getKey(), prop.getValue());
-		}
+	public static void init() throws IOException {
+		Configuration.setProp(
+				Configuration.PROPERTY_BUILD_FILE_LOCATION_DARK_OBJECTS,
+				Configuration.VERSION_FILE_NAME, false);
+		Configuration.loadEnvProperties();
+		Configuration.loadBuildProperties();
+		Configuration.loadConfigFile(Configuration
+				.getString(Configuration.PROPERTY_CONFIG_PATH));
+
+		Configuration.loaded = true;
 	}
 
 	/**
@@ -132,7 +139,8 @@ public class Configuration {
 	 */
 	protected static void loadBuildProperties() throws IOException {
 		final InputStream versionInfo = Configuration.class
-				.getResourceAsStream(getString(PROPERTY_BUILD_FILE_LOCATION_DARK_OBJECTS));
+				.getResourceAsStream(Configuration
+						.getString(Configuration.PROPERTY_BUILD_FILE_LOCATION_DARK_OBJECTS));
 		try {
 			Configuration.LOGGER.trace("Version info:"
 					+ Configuration.class
@@ -145,52 +153,6 @@ public class Configuration {
 				versionInfo.close();
 			}
 		}
-	}
-
-	/**
-	 * set a property value
-	 * 
-	 * @since Nov 3, 2015
-	 * @param key
-	 *            property key
-	 * @param value
-	 *            property value
-	 * @param overwrite
-	 *            overwrite if value is not null
-	 */
-	protected static void setProp(String key, String value, boolean overwrite) {
-		if (overwrite || properties.get(key) == null) {
-			properties.setProperty(key, value);
-		}
-	}
-
-	/**
-	 * Load properties to memory
-	 * 
-	 * @since Oct 31, 2015
-	 * @throws IOException
-	 *             Exception if we cant load the property file
-	 */
-	public static void init() throws IOException {
-		setProp(PROPERTY_BUILD_FILE_LOCATION_DARK_OBJECTS,
-				Configuration.VERSION_FILE_NAME, false);
-		Configuration.loadEnvProperties();
-		Configuration.loadBuildProperties();
-		loadConfigFile(getString(PROPERTY_CONFIG_PATH));
-
-		Configuration.loaded = true;
-	}
-
-	/**
-	 * Load properties directly from an input Stream
-	 * 
-	 * @since Nov 7, 2015
-	 * @param input
-	 *            Input stream of a properties file
-	 * @throws IOException
-	 */
-	protected static void loadProps(InputStream input) throws IOException {
-		properties.load(input);
 	}
 
 	/**
@@ -224,6 +186,47 @@ public class Configuration {
 			if (fis != null) {
 				fis.close();
 			}
+		}
+	}
+
+	/**
+	 * Load enviroment properties
+	 * 
+	 * @since Nov 3, 2015
+	 */
+	protected static void loadEnvProperties() {
+		for (final Entry<String, String> prop : System.getenv().entrySet()) {
+			Configuration.properties
+					.setProperty(prop.getKey(), prop.getValue());
+		}
+	}
+
+	/**
+	 * Load properties directly from an input Stream
+	 * 
+	 * @since Nov 7, 2015
+	 * @param input
+	 *            Input stream of a properties file
+	 * @throws IOException
+	 */
+	protected static void loadProps(InputStream input) throws IOException {
+		Configuration.properties.load(input);
+	}
+
+	/**
+	 * set a property value
+	 * 
+	 * @since Nov 3, 2015
+	 * @param key
+	 *            property key
+	 * @param value
+	 *            property value
+	 * @param overwrite
+	 *            overwrite if value is not null
+	 */
+	protected static void setProp(String key, String value, boolean overwrite) {
+		if (overwrite || Configuration.properties.get(key) == null) {
+			Configuration.properties.setProperty(key, value);
 		}
 	}
 

@@ -1,7 +1,5 @@
 package net.darkowl.darkNet.darkWatch;
 
-import net.darkowl.darkNet.darkObjects.devices.RadioThermostat;
-import net.darkowl.darkNet.darkObjects.interfaces.DarkDevice;
 import net.darkowl.darkNet.darkObjects.interfaces.Monitorable;
 
 import org.apache.logging.log4j.LogManager;
@@ -22,41 +20,41 @@ public class DarkScheduler {
 
 	protected synchronized static Scheduler getScheduler()
 			throws SchedulerException {
-		if (scheduler == null) {
-			scheduler = new StdSchedulerFactory().getScheduler();
-			scheduler.start();
+		if (DarkScheduler.scheduler == null) {
+			DarkScheduler.scheduler = new StdSchedulerFactory().getScheduler();
+			DarkScheduler.scheduler.start();
 		}
-		return scheduler;
-	}
-
-	public DarkScheduler() throws SchedulerException {
+		return DarkScheduler.scheduler;
 	}
 
 	public static void schedule(Monitorable device) {
 		Scheduler sched;
 		try {
-			sched = getScheduler();
-		} catch (SchedulerException e) {
-			LOGGER.error("Failed to get Scheduler", e);
+			sched = DarkScheduler.getScheduler();
+		} catch (final SchedulerException e) {
+			DarkScheduler.LOGGER.error("Failed to get Scheduler", e);
 			return;
 		}
 
-		JobDetail job = JobBuilder.newJob(device.getThisClass())
+		final JobDetail job = JobBuilder.newJob(device.getThisClass())
 				.withIdentity(device.getDeviceName() + "Job", "Monitored")
 				.build();
 
-		Trigger trigger = TriggerBuilder.newTrigger()
+		final Trigger trigger = TriggerBuilder.newTrigger()
 				.withIdentity(device.getDeviceName() + "Trigger", "Monitored")
 				.withSchedule(SimpleScheduleBuilder.repeatMinutelyForever(5))
 				.build();
 
 		try {
 			sched.scheduleJob(job, trigger);
-		} catch (SchedulerException e) {
-			LOGGER.error("Failed to schedule job", e);
+		} catch (final SchedulerException e) {
+			DarkScheduler.LOGGER.error("Failed to schedule job", e);
 			return;
 		}
 
+	}
+
+	public DarkScheduler() throws SchedulerException {
 	}
 
 }

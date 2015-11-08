@@ -23,7 +23,7 @@ public abstract class BaseDarkDevice implements DarkDevice {
 	 *            Name that identifies the device
 	 */
 	public BaseDarkDevice(String deviceName) {
-		name = deviceName;
+		this.name = deviceName;
 	}
 
 	/*
@@ -32,8 +32,9 @@ public abstract class BaseDarkDevice implements DarkDevice {
 	 * @see
 	 * net.darkowl.darkNet.darkObjects.interfaces.DarkDevice#getDeviceName()
 	 */
+	@Override
 	public String getDeviceName() {
-		return name;
+		return this.name;
 	}
 
 }

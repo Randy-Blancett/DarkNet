@@ -3,11 +3,11 @@
  */
 package net.darkowl.darkNet.darkWatch.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 
+import net.darkowl.darkNet.darkObjects.config.Configuration;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,42 +22,35 @@ public class WatchConfigTest {
 	public void setUp() {
 		try {
 			WatchConfig.init();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Test
 	public void testGetString() {
-		assertEquals(
-				"UTestDate",
-				WatchConfig
-						.getString(WatchConfig.PROPERTY_BUILD_DATE_DARK_OBJECTS));
-		assertEquals(
-				"UTest.0.1",
-				WatchConfig
-						.getString(WatchConfig.PROPERTY_BUILD_VERSION_DARK_OBJECTS));
+		Assert.assertEquals("UTestDate", Configuration
+				.getString(Configuration.PROPERTY_BUILD_DATE_DARK_OBJECTS));
+		Assert.assertEquals("UTest.0.1", Configuration
+				.getString(Configuration.PROPERTY_BUILD_VERSION_DARK_OBJECTS));
 
-		assertEquals("WatchDate",
-				WatchConfig
-						.getString(WatchConfig.PROPERTY_BUILD_DATE_DARK_WATCH));
-		assertEquals(
-				"Watch.0.1",
-				WatchConfig
-						.getString(WatchConfig.PROPERTY_BUILD_VERSION_DARK_WATCH));
+		Assert.assertEquals("WatchDate", Configuration
+				.getString(WatchConfig.PROPERTY_BUILD_DATE_DARK_WATCH));
+		Assert.assertEquals("Watch.0.1", Configuration
+				.getString(WatchConfig.PROPERTY_BUILD_VERSION_DARK_WATCH));
 	}
 
 	@Test
 	public void testGetVersionString() {
-		String output = WatchConfig.getVersionString();
+		final String output = WatchConfig.getVersionString();
 
-		assertTrue(output.contains("---------- Dark Watch ----------"));
-		assertTrue(output.contains("+   Version: Watch.0.1"));
-		assertTrue(output.contains("+   Date: WatchDate"));
+		Assert.assertTrue(output.contains("---------- Dark Watch ----------"));
+		Assert.assertTrue(output.contains("+   Version: Watch.0.1"));
+		Assert.assertTrue(output.contains("+   Date: WatchDate"));
 
-		assertTrue(output.contains("---------- Dark Objects ----------"));
-		assertTrue(output.contains("+   Version: UTest.0.1"));
-		assertTrue(output.contains("+   Date: UTestDate"));
+		Assert.assertTrue(output.contains("---------- Dark Objects ----------"));
+		Assert.assertTrue(output.contains("+   Version: UTest.0.1"));
+		Assert.assertTrue(output.contains("+   Date: UTestDate"));
 
 	}
 

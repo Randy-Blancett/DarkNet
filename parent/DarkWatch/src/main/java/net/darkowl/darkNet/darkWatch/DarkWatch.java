@@ -7,8 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -91,6 +89,10 @@ public class DarkWatch {
 		return deviceInstance;
 	}
 
+	protected static void kill() {
+		DarkWatch.run = false;
+	}
+
 	/**
 	 * @since Oct 30, 2015
 	 * @param args
@@ -151,13 +153,9 @@ public class DarkWatch {
 
 		this.loadNet();
 
-		while (run) {
+		while (DarkWatch.run) {
 
 		}
-	}
-
-	protected static void kill() {
-		run = false;
 	}
 
 	/**
@@ -178,14 +176,14 @@ public class DarkWatch {
 				.getDevice()) {
 			DarkDevice device;
 			try {
-				device = getInstance(deviceInfo.getType(), deviceInfo.getName());
+				device = DarkWatch.getInstance(deviceInfo.getType(),
+						deviceInfo.getName());
 				if (device instanceof Monitorable) {
 					DarkScheduler.schedule((Monitorable) device);
 				}
-			} catch (DarkWatchException e) {
-				LOGGER.error(
-						"Failed to load Device name: " + deviceInfo.getName(),
-						e);
+			} catch (final DarkWatchException e) {
+				DarkWatch.LOGGER.error("Failed to load Device name: "
+						+ deviceInfo.getName(), e);
 			}
 
 		}

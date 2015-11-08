@@ -3,9 +3,6 @@
  */
 package net.darkowl.darkNet.darkObjects.interfaces;
 
-import org.quartz.Job;
-
-
 /**
  * This is the base interface that all Device Objects in the DarkNet must
  * Implement
@@ -22,6 +19,5 @@ public interface DarkDevice {
 	 * @return The device name
 	 */
 	String getDeviceName();
-
 
 }
