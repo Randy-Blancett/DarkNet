@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import net.darkowl.darkNet.darkObjects.config.Configuration;
+import net.darkowl.darkNet.darkWatch.DarkWatch;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.logging.log4j.LogManager;
@@ -26,6 +27,11 @@ public class WatchConfig extends Configuration {
 	 * Version of Data Watch
 	 */
 	public static final String PROPERTY_BUILD_VERSION_DARK_WATCH = "darkWatch.version";
+	/**
+	 * The location where the program can find the XML configration file;
+	 */
+	public static final String PROPERTY_XML_FILE_LOCATION = "config.xml.location";
+
 	private final static Logger LOGGER = LogManager
 			.getLogger(Configuration.class);
 
@@ -60,7 +66,14 @@ public class WatchConfig extends Configuration {
 	 *             Error opening properties
 	 */
 	public static void init() throws IOException {
+		try {
+			Configuration.loadProps(DarkWatch.class
+					.getResourceAsStream("/default.properties"));
+		} catch (IOException e) {
+			LOGGER.error("Failed to load Default Properties",e);
+		}
 		Configuration.init();
+
 		final InputStream versionInfo = WatchConfig.class
 				.getResourceAsStream(WatchConfig.VERSION_FILE_NAME);
 		WatchConfig.LOGGER.trace("Version info:"

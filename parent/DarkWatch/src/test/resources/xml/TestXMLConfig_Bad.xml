@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<darknet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../DarkObjects/src/main/resources/xsd/DarkNetConfig.xsd">
+	<I>Should Not Be here!!</I>
+	<devices></devices><
+</darknet>

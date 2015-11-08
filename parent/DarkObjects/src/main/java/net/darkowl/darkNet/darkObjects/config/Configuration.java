@@ -31,6 +31,9 @@ public class Configuration {
 	 * Version of the Dark Objects
 	 */
 	public static final String PROPERTY_BUILD_VERSION_DARK_OBJECTS = "darkObjects.version";
+	/**
+	 * Location of the build info
+	 */
 	public static final String PROPERTY_BUILD_FILE_LOCATION_DARK_OBJECTS = "darkObjects.version";
 	/**
 	 * The path to the default configuration properties file
@@ -38,7 +41,6 @@ public class Configuration {
 	public static final String PROPERTY_CONFIG_PATH = "configuration.path";
 
 	protected static boolean loaded = false;
-
 	private final static Logger LOGGER = LogManager
 			.getLogger(Configuration.class);
 	protected static Properties properties = (Properties) System
@@ -57,7 +59,7 @@ public class Configuration {
 		return Configuration.properties.getProperty(property);
 	}
 
-	protected static void clearProperties() {
+	public static void clearProperties() {
 		properties = System.getProperties();
 		loaded = false;
 	}
@@ -177,6 +179,18 @@ public class Configuration {
 		loadConfigFile(getString(PROPERTY_CONFIG_PATH));
 
 		Configuration.loaded = true;
+	}
+
+	/**
+	 * Load properties directly from an input Stream
+	 * 
+	 * @since Nov 7, 2015
+	 * @param input
+	 *            Input stream of a properties file
+	 * @throws IOException
+	 */
+	protected static void loadProps(InputStream input) throws IOException {
+		properties.load(input);
 	}
 
 	/**
