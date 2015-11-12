@@ -26,6 +26,11 @@ public abstract class BaseDarkDevice implements DarkDevice {
 		this.name = deviceName;
 	}
 
+	public BaseDarkDevice() {
+		super();
+		this.name = "Unknown";
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

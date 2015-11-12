@@ -67,8 +67,9 @@ public class WatchConfig extends Configuration {
 	 */
 	public static void init() throws IOException {
 		try {
-			Configuration.loadProps(DarkWatch.class
-					.getResourceAsStream("/default.properties"));
+			Configuration.loadProps(
+					DarkWatch.class.getResourceAsStream("/default.properties"),
+					false);
 		} catch (final IOException e) {
 			WatchConfig.LOGGER.error("Failed to load Default Properties", e);
 		}

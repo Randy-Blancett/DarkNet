@@ -19,7 +19,14 @@ public class RadioThermostatTest {
 
 	@Test
 	public void ConstructorTest() {
-		final RadioThermostat obj = new RadioThermostat("test1");
+		RadioThermostat obj = new RadioThermostat();
+		Assert.assertTrue(obj instanceof DarkDevice);
+		Assert.assertTrue(obj instanceof Monitorable);
+		Assert.assertTrue(obj instanceof BaseDarkDevice);
+		Assert.assertTrue(obj instanceof Job);
+		Assert.assertEquals("Unknown", obj.getDeviceName());
+
+		obj = new RadioThermostat("test1");
 		Assert.assertTrue(obj instanceof DarkDevice);
 		Assert.assertTrue(obj instanceof Monitorable);
 		Assert.assertTrue(obj instanceof BaseDarkDevice);

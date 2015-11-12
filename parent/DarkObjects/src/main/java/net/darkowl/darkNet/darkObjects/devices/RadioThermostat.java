@@ -2,6 +2,8 @@ package net.darkowl.darkNet.darkObjects.devices;
 
 import net.darkowl.darkNet.darkObjects.interfaces.Monitorable;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -16,6 +18,9 @@ import org.quartz.JobExecutionException;
  * 
  */
 public class RadioThermostat extends BaseDarkDevice implements Monitorable {
+	// public class RadioThermostat implements Monitorable {
+	private final static Logger LOGGER = LogManager
+			.getLogger(RadioThermostat.class);
 
 	/**
 	 * Construct the device with a name
@@ -28,9 +33,13 @@ public class RadioThermostat extends BaseDarkDevice implements Monitorable {
 		super(deviceName);
 	}
 
+	public RadioThermostat() {
+		super();
+	}
+
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
-		System.out.println("I am Executeing!");
+		LOGGER.info("I am Logging an execution!!!");
 	}
 
 	@Override

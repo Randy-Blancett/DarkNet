@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -151,10 +152,17 @@ public class DarkWatch {
 		this.loadXmlConfig(Configuration
 				.getString(WatchConfig.PROPERTY_XML_FILE_LOCATION));
 
-		this.loadNet();
-
-		while (DarkWatch.run) {
-
+		try {
+			this.loadNet();
+			while (run) {
+				try {
+					TimeUnit.SECONDS.sleep(30);
+				} catch (InterruptedException e) {
+					LOGGER.error("Failed to sleep", e);
+				}
+			}
+		} finally {
+			DarkScheduler.shutdown();
 		}
 	}
 

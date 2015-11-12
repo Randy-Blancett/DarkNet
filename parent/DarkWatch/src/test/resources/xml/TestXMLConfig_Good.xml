@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <darknet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../DarkObjects/src/main/resources/xsd/DarkNetConfig.xsd">
 	<devices>
-		<device />
+		<device name="Test1" type="net.darkowl.darkNet.darkObjects.devices.RadioThermostat" />
 	</devices>
 
 </darknet>

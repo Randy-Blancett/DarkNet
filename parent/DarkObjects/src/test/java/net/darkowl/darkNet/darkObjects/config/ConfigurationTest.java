@@ -1,5 +1,7 @@
 package net.darkowl.darkNet.darkObjects.config;
 
+import static org.junit.Assert.*;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
@@ -8,6 +10,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.mchange.util.AssertException;
 
 public class ConfigurationTest {
 
@@ -82,5 +86,25 @@ public class ConfigurationTest {
 				Configuration.PROPERTY_BUILD_FILE_LOCATION_DARK_OBJECTS,
 				oldPropLocation, true);
 		Configuration.loadBuildProperties();
+	}
+
+	@Test
+	public void testLoadProps() throws IOException {
+		// Dont force update
+		Configuration.clearProperties();
+		Configuration.properties.setProperty("test1", "Init Value");
+		Configuration.loadProps(ConfigurationTest.class
+				.getResourceAsStream("/testProps.properties"), false);
+
+		assertEquals("Init Value", Configuration.getString("test1"));
+		assertEquals("Good Bye", Configuration.getString("test2"));
+		// Force update
+		Configuration.clearProperties();
+		Configuration.properties.setProperty("test1", "Init Value");
+		assertEquals("Init Value", Configuration.getString("test1"));
+		Configuration.loadProps(ConfigurationTest.class
+				.getResourceAsStream("/testProps.properties"), true);
+		assertEquals("Hello", Configuration.getString("test1"));
+		assertEquals("Good Bye", Configuration.getString("test2"));
 	}
 }

@@ -1,6 +1,7 @@
 package net.darkowl.darkNet.darkWatch;
 
 import net.darkowl.darkNet.darkObjects.interfaces.Monitorable;
+import net.darkowl.darkNet.darkWatch.exceptions.DarkWatchException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,13 +41,17 @@ public class DarkScheduler {
 				.withIdentity(device.getDeviceName() + "Job", "Monitored")
 				.build();
 
-		final Trigger trigger = TriggerBuilder.newTrigger()
+		final Trigger trigger = TriggerBuilder
+				.newTrigger()
 				.withIdentity(device.getDeviceName() + "Trigger", "Monitored")
-				.withSchedule(SimpleScheduleBuilder.repeatMinutelyForever(5))
-				.build();
+				.withSchedule(
+						SimpleScheduleBuilder
+								.repeatSecondlyForTotalCount(30, 5)).build();
 
 		try {
 			sched.scheduleJob(job, trigger);
+			System.out.println("I have scheduled " + job.toString() + " - "
+					+ trigger);
 		} catch (final SchedulerException e) {
 			DarkScheduler.LOGGER.error("Failed to schedule job", e);
 			return;
@@ -55,6 +60,21 @@ public class DarkScheduler {
 	}
 
 	public DarkScheduler() throws SchedulerException {
+	}
+
+	/**
+	 * This will shutdown the scheduler
+	 * 
+	 * @throws DarkWatchException
+	 * 
+	 * @since Nov 11, 2015
+	 */
+	public static void shutdown() throws DarkWatchException {
+		try {
+			getScheduler().shutdown();
+		} catch (SchedulerException e) {
+			throw new DarkWatchException("Failed to Shutdown Scheduler", e);
+		}
 	}
 
 }

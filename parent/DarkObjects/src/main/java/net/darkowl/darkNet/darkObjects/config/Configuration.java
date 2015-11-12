@@ -207,10 +207,25 @@ public class Configuration {
 	 * @since Nov 7, 2015
 	 * @param input
 	 *            Input stream of a properties file
+	 * @param force
+	 *            If a value is already set this will over write it
 	 * @throws IOException
 	 */
-	protected static void loadProps(InputStream input) throws IOException {
-		Configuration.properties.load(input);
+	protected static void loadProps(InputStream input, boolean force)
+			throws IOException {
+		if (force) {
+			Configuration.properties.load(input);
+		} else {
+			Properties temp = new Properties();
+			temp.load(input);
+			for (Entry<Object, Object> prop : temp.entrySet()) {
+				if (Configuration.getString(prop.getKey().toString()) == null) {
+					Configuration.properties.setProperty(prop.getKey()
+							.toString(), prop.getValue().toString());
+				}
+			}
+		}
+
 	}
 
 	/**
