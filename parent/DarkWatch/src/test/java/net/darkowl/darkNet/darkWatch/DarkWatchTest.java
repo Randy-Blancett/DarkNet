@@ -1,8 +1,6 @@
 package net.darkowl.darkNet.darkWatch;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 
 import net.darkowl.darkNet.darkObjects.config.Configuration;
@@ -18,9 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class DarkWatchTest {
-	private final ByteArrayOutputStream myOut = null;
-	private PrintStream origOutput;
-
 	@Before
 	public void setUp() {
 		// myOut = new ByteArrayOutputStream();
@@ -43,7 +38,7 @@ public class DarkWatchTest {
 			SecurityException, ClassNotFoundException, DarkWatchException {
 		boolean hasError = false;
 		try {
-			DarkWatch.getInstance("", "TestBad");
+			DarkWatch.getInstance("", "TestBad", null);
 		} catch (final DarkWatchException e) {
 			hasError = true;
 			Assert.assertEquals(
@@ -53,7 +48,7 @@ public class DarkWatchTest {
 		Assert.assertTrue(hasError);
 		hasError = false;
 		try {
-			DarkWatch.getInstance(null, "TestBad");
+			DarkWatch.getInstance(null, "TestBad", null);
 		} catch (final DarkWatchException e) {
 			hasError = true;
 			Assert.assertEquals(
@@ -65,7 +60,7 @@ public class DarkWatchTest {
 		try {
 			DarkWatch.getInstance(
 					"net.darkowl.darkNet.darkWatch.config.WatchConfig",
-					"TestWatchConfig");
+					"TestWatchConfig", null);
 		} catch (final DarkWatchException e) {
 			hasError = true;
 			Assert.assertEquals("Failed to create DarkDevice: ", e.getMessage());
@@ -74,7 +69,7 @@ public class DarkWatchTest {
 		hasError = false;
 
 		try {
-			DarkWatch.getInstance("BadClass", "TestBadClass");
+			DarkWatch.getInstance("BadClass", "TestBadClass", null);
 		} catch (final DarkWatchException e) {
 			hasError = true;
 			Assert.assertEquals(
@@ -86,7 +81,7 @@ public class DarkWatchTest {
 
 		final DarkDevice obj = DarkWatch.getInstance(
 				"net.darkowl.darkNet.darkObjects.devices.RadioThermostat",
-				"TestRadioThermostat");
+				"TestRadioThermostat", null);
 
 		Assert.assertTrue(obj instanceof DarkDevice);
 		Assert.assertTrue(obj instanceof RadioThermostat);

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.xml.bind.JAXBContext;
@@ -56,13 +57,18 @@ public class DarkWatch {
 	 *            Name of the class to get an instance of
 	 * @param name
 	 *            Name of the device
+	 * @param configs
+	 *            This is the set of configurations passed in from the xml
 	 * @return DarkDevice
 	 * @throws DarkWatchException
 	 *             If the class does not implement DarkDevice or there is
 	 *             another error
 	 */
 	@SuppressWarnings("unchecked")
-	protected static DarkDevice getInstance(String className, String name)
+	protected static DarkDevice getInstance(
+			String className,
+			String name,
+			List<net.darkowl.darkNet.darkObjects.xml.config.Configuration> configs)
 			throws DarkWatchException {
 		if (className == null || className.isEmpty()) {
 			throw new DarkWatchException(
@@ -72,9 +78,9 @@ public class DarkWatch {
 		Class<DarkDevice> device;
 		try {
 			device = (Class<DarkDevice>) Class.forName(className);
-			final Constructor<DarkDevice> constructor = device
-					.getConstructor(String.class);
-			deviceInstance = constructor.newInstance(name);
+			final Constructor<DarkDevice> constructor = device.getConstructor(
+					String.class, List.class);
+			deviceInstance = constructor.newInstance(name, configs);
 		} catch (final ClassNotFoundException e) {
 			throw new DarkWatchException("Class: " + className
 					+ " is not a valid class (can not be found)");
@@ -184,10 +190,16 @@ public class DarkWatch {
 				.getDevice()) {
 			DarkDevice device;
 			try {
-				device = DarkWatch.getInstance(deviceInfo.getType(),
-						deviceInfo.getName());
+				if (deviceInfo.getConfigurations() == null) {
+					device = DarkWatch.getInstance(deviceInfo.getType(),
+							deviceInfo.getName(), null);
+				} else {
+					device = DarkWatch.getInstance(deviceInfo.getType(),
+							deviceInfo.getName(), deviceInfo
+									.getConfigurations().getConfiguration());
+				}
 				if (device instanceof Monitorable) {
-					DarkScheduler.schedule((Monitorable) device);
+					DarkScheduler.schedule((Monitorable) device,device.getProperties());
 				}
 			} catch (final DarkWatchException e) {
 				DarkWatch.LOGGER.error("Failed to load Device name: "

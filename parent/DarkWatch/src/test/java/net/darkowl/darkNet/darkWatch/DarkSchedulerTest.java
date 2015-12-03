@@ -37,8 +37,8 @@ public class DarkSchedulerTest {
 
 	@Test
 	public void testSchedule() throws SchedulerException {
-		final DarkDevice dev = new RadioThermostat("Test1");
-		DarkScheduler.schedule((Monitorable) dev);
+		final DarkDevice dev = new RadioThermostat("Test1", null);
+		DarkScheduler.schedule((Monitorable) dev, null);
 
 		//
 		// Scheduler scheduler = DarkScheduler.getScheduler();

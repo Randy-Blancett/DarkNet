@@ -1,5 +1,7 @@
 package net.darkowl.darkNet.darkWatch;
 
+import java.util.Map;
+
 import net.darkowl.darkNet.darkObjects.interfaces.Monitorable;
 import net.darkowl.darkNet.darkWatch.exceptions.DarkWatchException;
 
@@ -15,6 +17,10 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
 public class DarkScheduler {
+	/**
+	 * This is the default number of seconds between runing the scheduled task
+	 */
+	public final static int DEFAULT_SECOND_INTERVAL = 60;
 	private final static Logger LOGGER = LogManager
 			.getLogger(DarkScheduler.class);
 	private static Scheduler scheduler;
@@ -28,8 +34,19 @@ public class DarkScheduler {
 		return DarkScheduler.scheduler;
 	}
 
-	public static void schedule(Monitorable device) {
+	/**
+	 * Schedule a device monitor to run
+	 * 
+	 * @since Nov 27, 2015
+	 * @param device
+	 *            the device
+	 * @param properties
+	 *            a map of properties
+	 */
+	public static void schedule(Monitorable device,
+			Map<String, String> properties) {
 		Scheduler sched;
+
 		try {
 			sched = DarkScheduler.getScheduler();
 		} catch (final SchedulerException e) {
@@ -40,6 +57,10 @@ public class DarkScheduler {
 		final JobDetail job = JobBuilder.newJob(device.getThisClass())
 				.withIdentity(device.getDeviceName() + "Job", "Monitored")
 				.build();
+
+		if (properties != null) {
+			job.getJobDataMap().putAll(properties);
+		}
 
 		final Trigger trigger = TriggerBuilder
 				.newTrigger()
@@ -59,6 +80,12 @@ public class DarkScheduler {
 
 	}
 
+	/**
+	 * Default constructor
+	 * 
+	 * @since Nov 27, 2015
+	 * @throws SchedulerException
+	 */
 	public DarkScheduler() throws SchedulerException {
 	}
 

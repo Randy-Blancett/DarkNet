@@ -1,0 +1,16 @@
+{
+	"temp":65.00,
+	"tmode":1,
+	"fmode":0,
+	"override":0,
+	"hold":0,
+	"t_heat":65.00,
+	"tstate":0,
+	"fstate":0,
+	"time":{
+		"day":3,
+		"hour":17,
+		"minute":45
+	},
+	"t_type_post":0
+}

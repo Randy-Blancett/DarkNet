@@ -36,7 +36,7 @@ public class Configuration {
 	/**
 	 * Location of the build info
 	 */
-	public static final String PROPERTY_BUILD_FILE_LOCATION_DARK_OBJECTS = "darkObjects.version";
+	public static final String PROPERTY_BUILD_FILE_LOCATION_DARK_OBJECTS = "darkObjects.version.location";
 	/**
 	 * Version of the Dark Objects
 	 */
@@ -135,7 +135,7 @@ public class Configuration {
 	 * Load properties related to the build
 	 * 
 	 * @since Nov 3, 2015
-	 * @throws IOException
+	 * @throws IOException If There is a problem opening the properties file
 	 */
 	protected static void loadBuildProperties() throws IOException {
 		final InputStream versionInfo = Configuration.class
@@ -209,7 +209,7 @@ public class Configuration {
 	 *            Input stream of a properties file
 	 * @param force
 	 *            If a value is already set this will over write it
-	 * @throws IOException
+	 * @throws IOException Throws exception if it cant open properties file
 	 */
 	protected static void loadProps(InputStream input, boolean force)
 			throws IOException {

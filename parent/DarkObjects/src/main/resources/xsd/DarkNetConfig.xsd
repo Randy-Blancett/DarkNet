@@ -5,7 +5,6 @@
 			<xs:documentation>Response root element</xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
-
 			<xs:sequence>
 				<xs:element name="devices" type="DevicesType" maxOccurs="1"
 					minOccurs="0"></xs:element>
@@ -20,7 +19,57 @@
 	</xs:complexType>
 
 	<xs:complexType name="DeviceType">
-		<xs:attribute name="name" type="xs:string"></xs:attribute>
-		<xs:attribute name="type" type="xs:string" use="required"></xs:attribute>
+		<xs:sequence>
+            <xs:element name="configurations" type="Configurations" maxOccurs="1" minOccurs="0"></xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+					This is the name that will be given to the device
+					it
+					must be unique to the network.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="type" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+					This is the Java class that will be used for this
+					device it needs to be the full package and class.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="Configurations">
+		<xs:annotation>
+			<xs:documentation>This is a group of all the configuration objects
+				needed for the Java Object
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="configuration" type="Configuration"
+				maxOccurs="unbounded" minOccurs="1"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Configuration">
+		<xs:annotation>
+			<xs:documentation>Each of these values will be passed to the java
+				class and used to configure the object.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="key" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>This is the name of the property
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="value" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>This is the value of the property
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 </xs:schema>

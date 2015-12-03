@@ -1,6 +1,6 @@
 package net.darkowl.darkNet.darkObjects.config;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,8 +10,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.mchange.util.AssertException;
 
 public class ConfigurationTest {
 
