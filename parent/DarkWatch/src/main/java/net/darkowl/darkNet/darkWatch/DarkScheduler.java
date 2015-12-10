@@ -81,15 +81,6 @@ public class DarkScheduler {
 	}
 
 	/**
-	 * Default constructor
-	 * 
-	 * @since Nov 27, 2015
-	 * @throws SchedulerException
-	 */
-	public DarkScheduler() throws SchedulerException {
-	}
-
-	/**
 	 * This will shutdown the scheduler
 	 * 
 	 * @throws DarkWatchException
@@ -98,10 +89,19 @@ public class DarkScheduler {
 	 */
 	public static void shutdown() throws DarkWatchException {
 		try {
-			getScheduler().shutdown();
-		} catch (SchedulerException e) {
+			DarkScheduler.getScheduler().shutdown();
+		} catch (final SchedulerException e) {
 			throw new DarkWatchException("Failed to Shutdown Scheduler", e);
 		}
+	}
+
+	/**
+	 * Default constructor
+	 * 
+	 * @since Nov 27, 2015
+	 * @throws SchedulerException
+	 */
+	public DarkScheduler() throws SchedulerException {
 	}
 
 }

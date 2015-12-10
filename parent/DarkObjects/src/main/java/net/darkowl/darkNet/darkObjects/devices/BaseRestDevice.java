@@ -26,50 +26,16 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class BaseRestDevice extends BaseDarkDevice implements
 		RestMonitoredDevice {
+	private static CloseableHttpClient httpclient;
+
 	private final static Logger LOGGER = LogManager
 			.getLogger(BaseRestDevice.class);
 
-	private static CloseableHttpClient httpclient;
-
 	private static CloseableHttpClient getHttpClient() {
-		if (httpclient == null) {
-			httpclient = HttpClients.createDefault();
+		if (BaseRestDevice.httpclient == null) {
+			BaseRestDevice.httpclient = HttpClients.createDefault();
 		}
-		return httpclient;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * net.darkowl.darkNet.darkObjects.interfaces.RestMonitoredDevice#getData
-	 * (java.lang.String)
-	 */
-	@Override
-	public HttpEntity getData(String endpoint) {
-		String url = "http";
-		if (getPropertyBoolean(PROPERTY_SECURE)) {
-			url += "s";
-		}
-		url += "://" + getProperty(PROPERTY_IP) + "/" + endpoint;
-		LOGGER.info("Trying to connect to: " + url);
-		try {
-			CloseableHttpResponse response = getHttpClient().execute(
-					new HttpGet(url));
-			int responseCode = response.getStatusLine().getStatusCode();
-			switch (responseCode) {
-			case 200:
-				break;
-			default:
-				LOGGER.error("Failed to get data from: " + url + " received "
-						+ responseCode);
-				return null;
-			}
-			return response.getEntity();
-		} catch (IOException e) {
-			LOGGER.error("Failed to get data from " + url, e);
-		}
-		return null;
+		return BaseRestDevice.httpclient;
 	}
 
 	/**
@@ -92,5 +58,40 @@ public abstract class BaseRestDevice extends BaseDarkDevice implements
 	 */
 	public BaseRestDevice(String deviceName, List<Configuration> configs) {
 		super(deviceName, configs);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * net.darkowl.darkNet.darkObjects.interfaces.RestMonitoredDevice#getData
+	 * (java.lang.String)
+	 */
+	@Override
+	public HttpEntity getData(String endpoint) {
+		String url = "http";
+		if (this.getPropertyBoolean(RestMonitoredDevice.PROPERTY_SECURE)) {
+			url += "s";
+		}
+		url += "://" + this.getProperty(RestMonitoredDevice.PROPERTY_IP) + "/"
+				+ endpoint;
+		BaseRestDevice.LOGGER.info("Trying to connect to: " + url);
+		try {
+			final CloseableHttpResponse response = BaseRestDevice
+					.getHttpClient().execute(new HttpGet(url));
+			final int responseCode = response.getStatusLine().getStatusCode();
+			switch (responseCode) {
+			case 200:
+				break;
+			default:
+				BaseRestDevice.LOGGER.error("Failed to get data from: " + url
+						+ " received " + responseCode);
+				return null;
+			}
+			return response.getEntity();
+		} catch (final IOException e) {
+			BaseRestDevice.LOGGER.error("Failed to get data from " + url, e);
+		}
+		return null;
 	}
 }

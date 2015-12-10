@@ -95,7 +95,7 @@ public abstract class BaseDarkDevice implements DarkDevice {
 	 */
 	@Override
 	public boolean getPropertyBoolean(String key) {
-		String rawData = getProperty(key);
+		final String rawData = this.getProperty(key);
 		if (rawData == null || rawData.isEmpty()
 				|| rawData.equalsIgnoreCase("false")
 				|| rawData.equalsIgnoreCase("0")) {

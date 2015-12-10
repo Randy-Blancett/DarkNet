@@ -2,6 +2,7 @@ package net.darkowl.darkNet.darkObjects.devices;
 
 import java.util.List;
 
+import net.darkowl.darkNet.darkObjects.config.Catalog;
 import net.darkowl.darkNet.darkObjects.xml.config.Configuration;
 import net.darkowl.darnNet.darkObjects.json.radioThermostat.TStat;
 
@@ -22,13 +23,23 @@ import org.quartz.JobExecutionException;
  */
 public class RadioThermostat extends BaseJsonRestDevice {
 
-	private final static Logger LOGGER = LogManager
-			.getLogger(RadioThermostat.class);
-
 	/**
 	 * This is the endpoint that will return general Thermostat Data
 	 */
 	public final static String ENDPOINT_THERMOSTAT_DATA = "tstat";
+
+	private final static Logger LOGGER = LogManager
+			.getLogger(RadioThermostat.class);
+
+	/**
+	 * This will create an object with no device name this is needed so we can
+	 * use Quartz
+	 * 
+	 * @since Nov 26, 2015
+	 */
+	public RadioThermostat() {
+		super();
+	}
 
 	/**
 	 * Construct the device with a name
@@ -43,14 +54,12 @@ public class RadioThermostat extends BaseJsonRestDevice {
 		super(deviceName, configs);
 	}
 
-	/**
-	 * This will create an object with no device name this is needed so we can
-	 * use Quartz
-	 * 
-	 * @since Nov 26, 2015
-	 */
-	public RadioThermostat() {
-		super();
+	@Override
+	public void execute(JobExecutionContext context)
+			throws JobExecutionException {
+		this.reloadProperties(context.getJobDetail().getJobDataMap()
+				.getWrappedMap());
+		this.getDeviceInfo();
 	}
 
 	/**
@@ -59,14 +68,11 @@ public class RadioThermostat extends BaseJsonRestDevice {
 	 * @since Nov 26, 2015
 	 */
 	protected void getDeviceInfo() {
-		System.out.println(getJson(ENDPOINT_THERMOSTAT_DATA, TStat.class));
-	}
-
-	@Override
-	public void execute(JobExecutionContext context)
-			throws JobExecutionException {
-		reloadProperties(context.getJobDetail().getJobDataMap().getWrappedMap());
-		getDeviceInfo();
+		final TStat data = (TStat) this.getJson(
+				RadioThermostat.ENDPOINT_THERMOSTAT_DATA, TStat.class);
+		if (data != null) {
+			Catalog.getStorageAPI().storeItem(data.toMap());
+		}
 	}
 
 	@Override

@@ -28,6 +28,11 @@ import com.google.gson.JsonSyntaxException;
  * 
  */
 public abstract class BaseJsonRestDevice extends BaseRestDevice {
+	private final static Logger LOGGER = LogManager
+			.getLogger(BaseJsonRestDevice.class);
+
+	private final JSONParser parser = new JSONParser();
+
 	/**
 	 * Create a basic Uknown device
 	 * 
@@ -51,10 +56,29 @@ public abstract class BaseJsonRestDevice extends BaseRestDevice {
 
 	}
 
-	private final static Logger LOGGER = LogManager
-			.getLogger(BaseJsonRestDevice.class);
-
-	private JSONParser parser = new JSONParser();
+	/**
+	 * get a json object from a rest service
+	 * 
+	 * @since Dec 2, 2015
+	 * @param endpoint
+	 *            endpoint to get json object
+	 * @return generic json object
+	 */
+	public JSONObject getJson(String endpoint) {
+		final HttpEntity obj = this.getData(endpoint);
+		if (obj == null) {
+			return null;
+		}
+		BaseJsonRestDevice.LOGGER.info("Content Type:" + obj.getContentType());
+		BaseJsonRestDevice.LOGGER.info(obj.toString());
+		try {
+			return (JSONObject) this.parser.parse(EntityUtils.toString(obj));
+		} catch (UnsupportedOperationException | IOException | ParseException e) {
+			BaseJsonRestDevice.LOGGER.error(
+					"Failed to parse returned data into JSON", e);
+		}
+		return null;
+	}
 
 	/**
 	 * This will call a rest endpoint and turn it into the class passed in with
@@ -68,44 +92,22 @@ public abstract class BaseJsonRestDevice extends BaseRestDevice {
 	 * @return generic json object
 	 */
 	public <T> Object getJson(String endpoint, Class<T> clazz) {
-		HttpEntity data = getData(endpoint);
+		final HttpEntity data = this.getData(endpoint);
 		if (data == null) {
 			return null;
 		}
-		LOGGER.info("Content Type:" + data.getContentType());
-		LOGGER.info(data.toString());
+		BaseJsonRestDevice.LOGGER.info("Content Type:" + data.getContentType());
+		BaseJsonRestDevice.LOGGER.info(data.toString());
 
-		Gson gson = new GsonBuilder().create();
+		final Gson gson = new GsonBuilder().create();
 		T obj = null;
 		try {
 			obj = gson.fromJson(EntityUtils.toString(data), clazz);
 		} catch (JsonSyntaxException | IOException
 				| org.apache.http.ParseException e) {
-			LOGGER.error("Failed to parse data from :" + endpoint, e);
+			BaseJsonRestDevice.LOGGER.error("Failed to parse data from :"
+					+ endpoint, e);
 		}
 		return obj;
-	}
-
-	/**
-	 * get a json object from a rest service
-	 * 
-	 * @since Dec 2, 2015
-	 * @param endpoint
-	 *            endpoint to get json object
-	 * @return generic json object
-	 */
-	public JSONObject getJson(String endpoint) {
-		HttpEntity obj = getData(endpoint);
-		if (obj == null) {
-			return null;
-		}
-		LOGGER.info("Content Type:" + obj.getContentType());
-		LOGGER.info(obj.toString());
-		try {
-			return (JSONObject) parser.parse(EntityUtils.toString(obj));
-		} catch (UnsupportedOperationException | IOException | ParseException e) {
-			LOGGER.error("Failed to parse returned data into JSON", e);
-		}
-		return null;
 	}
 }

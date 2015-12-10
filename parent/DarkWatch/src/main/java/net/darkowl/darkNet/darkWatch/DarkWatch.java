@@ -14,6 +14,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import net.darkowl.darkNet.darkObjects.config.Catalog;
 import net.darkowl.darkNet.darkObjects.config.Configuration;
 import net.darkowl.darkNet.darkObjects.interfaces.DarkDevice;
 import net.darkowl.darkNet.darkObjects.interfaces.Monitorable;
@@ -116,6 +117,7 @@ public class DarkWatch {
 		} catch (final DarkWatchException e) {
 			DarkWatch.LOGGER.error(e.getMessage());
 		}
+		Catalog.getStorageAPI().closeConnection();
 		DarkWatch.LOGGER.info("... You are no longer being watched.");
 	}
 
@@ -160,11 +162,11 @@ public class DarkWatch {
 
 		try {
 			this.loadNet();
-			while (run) {
+			while (DarkWatch.run) {
 				try {
 					TimeUnit.SECONDS.sleep(30);
-				} catch (InterruptedException e) {
-					LOGGER.error("Failed to sleep", e);
+				} catch (final InterruptedException e) {
+					DarkWatch.LOGGER.error("Failed to sleep", e);
 				}
 			}
 		} finally {
@@ -199,7 +201,8 @@ public class DarkWatch {
 									.getConfigurations().getConfiguration());
 				}
 				if (device instanceof Monitorable) {
-					DarkScheduler.schedule((Monitorable) device,device.getProperties());
+					DarkScheduler.schedule((Monitorable) device,
+							device.getProperties());
 				}
 			} catch (final DarkWatchException e) {
 				DarkWatch.LOGGER.error("Failed to load Device name: "

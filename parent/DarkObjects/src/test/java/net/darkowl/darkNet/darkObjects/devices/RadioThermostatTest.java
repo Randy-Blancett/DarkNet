@@ -3,14 +3,18 @@
  */
 package net.darkowl.darkNet.darkObjects.devices;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import net.darkowl.darkNet.darkObjects.config.Catalog;
 import net.darkowl.darkNet.darkObjects.interfaces.DarkDevice;
 import net.darkowl.darkNet.darkObjects.interfaces.Monitorable;
 import net.darkowl.darkNet.darkObjects.interfaces.RestMonitoredDevice;
+import net.darkowl.darkNet.darkObjects.storage.DarkTestStorage;
 import net.darkowl.darkNet.darkObjects.test.restEndpoints.RadioThermostat_tstat;
 import net.darkowl.darkNet.darkObjects.test.restEndpoints.RadioThermostat_tstat.ResponseType;
 import net.darkowl.darkNet.darkObjects.xml.config.Configuration;
@@ -20,6 +24,7 @@ import org.apache.http.impl.bootstrap.HttpServer;
 import org.apache.http.impl.bootstrap.ServerBootstrap;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.quartz.Job;
@@ -32,6 +37,7 @@ import org.quartz.Job;
 public class RadioThermostatTest {
 
 	private static HttpServer server = null;
+	private static DarkTestStorage store = null;
 
 	@BeforeClass
 	public static void setUp() throws IOException {
@@ -41,11 +47,19 @@ public class RadioThermostatTest {
 				.registerHandler("/tstat", new RadioThermostat_tstat())
 				.create();
 		RadioThermostatTest.server.start();
+		store = new DarkTestStorage();
+		Catalog.setStorageAPI(store);
+	}
+
+	@Before
+	public void before() {
+		store.clear();
 	}
 
 	@AfterClass
 	public static void tearDown() {
 		RadioThermostatTest.server.shutdown(5, TimeUnit.SECONDS);
+		Catalog.setStorageAPI(null);
 	}
 
 	@Test
@@ -108,6 +122,7 @@ public class RadioThermostatTest {
 		obj.getDeviceInfo();
 		RadioThermostat_tstat.setType(ResponseType.TYPE_200_GOOD_DATA);
 		obj.getDeviceInfo();
+		assertEquals(1, store.getSize());
 	}
 
 	@Test

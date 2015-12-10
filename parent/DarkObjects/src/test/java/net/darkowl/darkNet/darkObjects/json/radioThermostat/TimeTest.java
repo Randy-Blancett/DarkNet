@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Map;
 
 import net.darkowl.darkNet.darkObjects.config.Configuration;
 import net.darkowl.darnNet.darkObjects.json.radioThermostat.Time;
@@ -53,5 +54,25 @@ public class TimeTest {
 		assertEquals(3, obj.getDay());
 		assertEquals(17, obj.getHour());
 		assertEquals(45, obj.getMinute());
+	}
+
+	@Test
+	public void testToMap() {
+		Time time = new Time();
+		time.setDay(1);
+		time.setHour(2);
+		time.setMinute(23);
+		Map<String, String> map = time.toMap();
+
+		assertEquals("1", map.get(Time.COL_DAY));
+		assertEquals("2", map.get(Time.COL_HOUR));
+		assertEquals("23", map.get(Time.COL_MIN));
+		assertEquals(Time.class.toString(), map.get(Time.COL_TYPE));
+
+		Time rebuild = new Time(map);
+		assertEquals(1, rebuild.getDay());
+		assertEquals(2, rebuild.getHour());
+		assertEquals(23, rebuild.getMinute());
+
 	}
 }
