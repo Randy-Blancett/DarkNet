@@ -71,7 +71,8 @@ public class RadioThermostat extends BaseJsonRestDevice {
 		final TStat data = (TStat) this.getJson(
 				RadioThermostat.ENDPOINT_THERMOSTAT_DATA, TStat.class);
 		if (data != null) {
-			Catalog.getStorageAPI().storeItem(data.toMap());
+			Catalog.getStorageAPI().storeItem(TStat.class.getName(),
+					data.toMap());
 		}
 	}
 

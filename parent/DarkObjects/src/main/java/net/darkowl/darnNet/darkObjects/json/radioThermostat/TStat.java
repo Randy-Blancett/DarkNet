@@ -1,11 +1,14 @@
 package net.darkowl.darnNet.darkObjects.json.radioThermostat;
 
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.darkowl.darkNet.darkObjects.Watched;
+import net.darkowl.darkNet.darkObjects.interfaces.AbstractDarkNetDAO;
 import net.darkowl.darkNet.darkObjects.interfaces.DarkNetDAO;
 
 import org.apache.logging.log4j.LogManager;
@@ -18,7 +21,7 @@ import org.apache.logging.log4j.Logger;
  * @since Dec 3, 2015
  * 
  */
-public class TStat implements DarkNetDAO {
+public class TStat extends AbstractDarkNetDAO {
 	public static String COL_F_MODE = "F_MODE";
 	public static String COL_F_STATE = "F_STATE";
 	public static String COL_HOLD = "HOLD";
@@ -29,36 +32,25 @@ public class TStat implements DarkNetDAO {
 	public static String COL_T_TYPE_POST = "T_TYPE_POST";
 	public static String COL_TEMP = "TEMP";
 	public static String COL_TIME = "TIME";
-	public static String COL_DATE_TIME = "DATE_TIME";
 
+	private final static Logger LOGGER = LogManager.getLogger(DarkNetDAO.class);
+	private Date dateTime;
 	private int fmode;
 	private int fstate;
 	private int hold;
 	private int override;
+	private SimpleDateFormat sdf = new SimpleDateFormat(
+			"EEE, d MMM yyyy HH:mm:ss Z");
 	private double t_heat;
 	private int t_type_post;
 	private double temp;
 	private Time time;
 	private int tmode;
 	private int tstate;
-	private Date dateTime;
-
-	/**
-	 * Get Date the object was created
-	 * 
-	 * @since Dec 9, 2015
-	 * @return
-	 */
-	public Date getDateTime() {
-		return dateTime;
-	}
-
-	SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
-	private final static Logger LOGGER = LogManager.getLogger(DarkNetDAO.class);
 
 	public TStat() {
 		super();
-		dateTime = new Date();
+		this.dateTime = new Date();
 	}
 
 	public TStat(Map<String, String> data) {
@@ -75,16 +67,27 @@ public class TStat implements DarkNetDAO {
 		this.time = new Time(data);
 		this.t_type_post = Integer.parseInt(data.get(TStat.COL_T_TYPE_POST));
 		try {
-			this.dateTime = sdf.parse(data.get(TStat.COL_DATE_TIME));
-		} catch (ParseException e) {
-			LOGGER.error("Failed to parse Date Time to create object", e);
+			this.dateTime = this.sdf.parse(data.get(DarkNetDAO.COL_DATE_TIME));
+		} catch (final ParseException e) {
+			TStat.LOGGER.error("Failed to parse Date Time to create object", e);
 		}
+	}
+
+	/**
+	 * Get Date the object was created
+	 * 
+	 * @since Dec 9, 2015
+	 * @return
+	 */
+	public Date getDateTime() {
+		return this.dateTime;
 	}
 
 	/**
 	 * @since Dec 3, 2015
 	 * @return the fmode
 	 */
+	@Watched()
 	public int getFmode() {
 		return this.fmode;
 	}
@@ -93,6 +96,7 @@ public class TStat implements DarkNetDAO {
 	 * @since Dec 3, 2015
 	 * @return the fstate
 	 */
+	@Watched()
 	public int getFstate() {
 		return this.fstate;
 	}
@@ -101,6 +105,7 @@ public class TStat implements DarkNetDAO {
 	 * @since Dec 3, 2015
 	 * @return the hold
 	 */
+	@Watched()
 	public int getHold() {
 		return this.hold;
 	}
@@ -109,6 +114,7 @@ public class TStat implements DarkNetDAO {
 	 * @since Dec 3, 2015
 	 * @return the override
 	 */
+	@Watched()
 	public int getOverride() {
 		return this.override;
 	}
@@ -117,6 +123,7 @@ public class TStat implements DarkNetDAO {
 	 * @since Dec 3, 2015
 	 * @return the t_heat
 	 */
+	@Watched()
 	public double getT_heat() {
 		return this.t_heat;
 	}
@@ -125,6 +132,7 @@ public class TStat implements DarkNetDAO {
 	 * @since Dec 3, 2015
 	 * @return the t_type_post
 	 */
+	@Watched()
 	public int getT_type_post() {
 		return this.t_type_post;
 	}
@@ -133,6 +141,7 @@ public class TStat implements DarkNetDAO {
 	 * @since Dec 3, 2015
 	 * @return the temp
 	 */
+	@Watched()
 	public double getTemp() {
 		return this.temp;
 	}
@@ -149,6 +158,7 @@ public class TStat implements DarkNetDAO {
 	 * @since Dec 3, 2015
 	 * @return the tmode
 	 */
+	@Watched()
 	public int getTmode() {
 		return this.tmode;
 	}
@@ -157,6 +167,7 @@ public class TStat implements DarkNetDAO {
 	 * @since Dec 3, 2015
 	 * @return the tstate
 	 */
+	@Watched()
 	public int getTstate() {
 		return this.tstate;
 	}
@@ -265,8 +276,8 @@ public class TStat implements DarkNetDAO {
 		output.putAll(this.getTime().toMap());
 		output.put(TStat.COL_T_TYPE_POST,
 				Integer.toString(this.getT_type_post()));
-		output.put(DarkNetDAO.COL_TYPE, TStat.class.toString());
-		output.put(COL_DATE_TIME, sdf.format(dateTime));
+		output.put(DarkNetDAO.COL_TYPE, TStat.class.getName());
+		output.put(DarkNetDAO.COL_DATE_TIME, this.sdf.format(this.dateTime));
 
 		return output;
 	}
@@ -278,30 +289,43 @@ public class TStat implements DarkNetDAO {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		builder.append("TStat [fmode=");
-		builder.append(fmode);
+		builder.append(this.fmode);
 		builder.append(", fstate=");
-		builder.append(fstate);
+		builder.append(this.fstate);
 		builder.append(", hold=");
-		builder.append(hold);
+		builder.append(this.hold);
 		builder.append(", override=");
-		builder.append(override);
+		builder.append(this.override);
 		builder.append(", t_heat=");
-		builder.append(t_heat);
+		builder.append(this.t_heat);
 		builder.append(", t_type_post=");
-		builder.append(t_type_post);
+		builder.append(this.t_type_post);
 		builder.append(", temp=");
-		builder.append(temp);
+		builder.append(this.temp);
 		builder.append(", time=");
-		builder.append(time);
+		builder.append(this.time);
 		builder.append(", tmode=");
-		builder.append(tmode);
+		builder.append(this.tmode);
 		builder.append(", tstate=");
-		builder.append(tstate);
+		builder.append(this.tstate);
 		builder.append(", dateTime=");
-		builder.append(sdf.format(dateTime));
+		builder.append(this.sdf.format(this.dateTime));
 		builder.append("]");
 		return builder.toString();
+	}
+
+	@Override
+	public boolean hasChanged(Object newObj) {
+		if (!(newObj instanceof TStat)) {
+			LOGGER.error("You are these object have to be of the same type");
+			throw new ClassCastException("This object is not of type: "
+					+ Time.class.getName());
+
+		}
+
+		Method[] methods = TStat.class.getMethods();
+		return hasChanged(methods, this, newObj);
 	}
 }

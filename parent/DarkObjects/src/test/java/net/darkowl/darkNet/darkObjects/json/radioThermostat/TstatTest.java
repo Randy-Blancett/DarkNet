@@ -105,6 +105,109 @@ public class TstatTest {
 	}
 
 	@Test
+	public void testHasChanged() {
+		TStat obj1 = new TStat();
+		TStat obj2 = new TStat();
+		assertFalse(obj1.hasChanged(obj2));
+		assertFalse(obj2.hasChanged(obj1));
+
+		obj1.setFmode(2);
+		assertTrue(obj1.hasChanged(obj2));
+		assertTrue(obj2.hasChanged(obj1));
+		obj2.setFmode(1);
+		assertTrue(obj1.hasChanged(obj2));
+		assertTrue(obj2.hasChanged(obj1));
+		obj2.setFmode(2);
+		assertFalse(obj1.hasChanged(obj2));
+		assertFalse(obj2.hasChanged(obj1));
+
+		obj1.setFstate(2);
+		assertTrue(obj1.hasChanged(obj2));
+		assertTrue(obj2.hasChanged(obj1));
+		obj2.setFstate(1);
+		assertTrue(obj1.hasChanged(obj2));
+		assertTrue(obj2.hasChanged(obj1));
+		obj2.setFstate(2);
+		assertFalse(obj1.hasChanged(obj2));
+		assertFalse(obj2.hasChanged(obj1));
+
+		obj1.setHold(2);
+		assertTrue(obj1.hasChanged(obj2));
+		assertTrue(obj2.hasChanged(obj1));
+		obj2.setHold(1);
+		assertTrue(obj1.hasChanged(obj2));
+		assertTrue(obj2.hasChanged(obj1));
+		obj2.setHold(2);
+		assertFalse(obj1.hasChanged(obj2));
+		assertFalse(obj2.hasChanged(obj1));
+
+		obj1.setOverride(2);
+		assertTrue(obj1.hasChanged(obj2));
+		assertTrue(obj2.hasChanged(obj1));
+		obj2.setOverride(1);
+		assertTrue(obj1.hasChanged(obj2));
+		assertTrue(obj2.hasChanged(obj1));
+		obj2.setOverride(2);
+		assertFalse(obj1.hasChanged(obj2));
+		assertFalse(obj2.hasChanged(obj1));
+
+		obj1.setT_heat(2);
+		assertTrue(obj1.hasChanged(obj2));
+		assertTrue(obj2.hasChanged(obj1));
+		obj2.setT_heat(1);
+		assertTrue(obj1.hasChanged(obj2));
+		assertTrue(obj2.hasChanged(obj1));
+		obj2.setT_heat(2);
+		assertFalse(obj1.hasChanged(obj2));
+		assertFalse(obj2.hasChanged(obj1));
+
+		obj1.setT_type_post(2);
+		assertTrue(obj1.hasChanged(obj2));
+		assertTrue(obj2.hasChanged(obj1));
+		obj2.setT_type_post(1);
+		assertTrue(obj1.hasChanged(obj2));
+		assertTrue(obj2.hasChanged(obj1));
+		obj2.setT_type_post(2);
+		assertFalse(obj1.hasChanged(obj2));
+		assertFalse(obj2.hasChanged(obj1));
+
+		obj1.setTemp(2);
+		assertTrue(obj1.hasChanged(obj2));
+		assertTrue(obj2.hasChanged(obj1));
+		obj2.setTemp(1);
+		assertTrue(obj1.hasChanged(obj2));
+		assertTrue(obj2.hasChanged(obj1));
+		obj2.setTemp(2);
+		assertFalse(obj1.hasChanged(obj2));
+		assertFalse(obj2.hasChanged(obj1));
+
+		obj1.setTmode(2);
+		assertTrue(obj1.hasChanged(obj2));
+		assertTrue(obj2.hasChanged(obj1));
+		obj2.setTmode(1);
+		assertTrue(obj1.hasChanged(obj2));
+		assertTrue(obj2.hasChanged(obj1));
+		obj2.setTmode(2);
+		assertFalse(obj1.hasChanged(obj2));
+		assertFalse(obj2.hasChanged(obj1));
+
+		obj1.setTstate(2);
+		assertTrue(obj1.hasChanged(obj2));
+		assertTrue(obj2.hasChanged(obj1));
+		obj2.setTstate(1);
+		assertTrue(obj1.hasChanged(obj2));
+		assertTrue(obj2.hasChanged(obj1));
+		obj2.setTstate(2);
+		assertFalse(obj1.hasChanged(obj2));
+		assertFalse(obj2.hasChanged(obj1));
+
+		obj1.setTime(new Time(1, 3, 4));
+		assertFalse(obj1.hasChanged(obj2));
+		assertFalse(obj2.hasChanged(obj1));
+
+	}
+
+	@Test
 	public void testToMap() throws FileNotFoundException {
 		Gson gson = new Gson();
 		Time time = new Time(3, 17, 45);
@@ -129,6 +232,9 @@ public class TstatTest {
 		assertEquals("45", map.get(Time.COL_MIN));
 		assertEquals("1", map.get(TStat.COL_T_MODE));
 		assertEquals("0", map.get(TStat.COL_T_STATE));
+		assertEquals(
+				"net.darkowl.darnNet.darkObjects.json.radioThermostat.TStat",
+				map.get(TStat.COL_TYPE));
 		Assert.assertNotNull(map.get(TStat.COL_DATE_TIME));
 
 		TStat rebuild = new TStat(map);

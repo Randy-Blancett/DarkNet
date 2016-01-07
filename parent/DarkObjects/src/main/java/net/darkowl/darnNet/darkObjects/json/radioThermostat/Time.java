@@ -1,9 +1,15 @@
 package net.darkowl.darnNet.darkObjects.json.radioThermostat;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.darkowl.darkNet.darkObjects.Watched;
+import net.darkowl.darkNet.darkObjects.interfaces.AbstractDarkNetDAO;
 import net.darkowl.darkNet.darkObjects.interfaces.DarkNetDAO;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Radio thermostat to hold time
@@ -12,7 +18,9 @@ import net.darkowl.darkNet.darkObjects.interfaces.DarkNetDAO;
  * @since Dec 3, 2015
  * 
  */
-public class Time implements DarkNetDAO {
+public class Time extends AbstractDarkNetDAO {
+
+	private final static Logger LOGGER = LogManager.getLogger(Time.class);
 	public static String COL_DAY = "DAY";
 	public static String COL_HOUR = "HOUR";
 	public static String COL_MIN = "MIN";
@@ -43,6 +51,7 @@ public class Time implements DarkNetDAO {
 	 * @since Dec 3, 2015
 	 * @return the day
 	 */
+	@Watched
 	public int getDay() {
 		return this.day;
 	}
@@ -51,6 +60,7 @@ public class Time implements DarkNetDAO {
 	 * @since Dec 3, 2015
 	 * @return the hour
 	 */
+	@Watched
 	public int getHour() {
 		return this.hour;
 	}
@@ -59,6 +69,7 @@ public class Time implements DarkNetDAO {
 	 * @since Dec 3, 2015
 	 * @return the minute
 	 */
+	@Watched
 	public int getMinute() {
 		return this.minute;
 	}
@@ -96,7 +107,7 @@ public class Time implements DarkNetDAO {
 		output.put(Time.COL_DAY, Integer.toString(this.getDay()));
 		output.put(Time.COL_HOUR, Integer.toString(this.getHour()));
 		output.put(Time.COL_MIN, Integer.toString(this.getMinute()));
-		output.put(DarkNetDAO.COL_TYPE, Time.class.toString());
+		output.put(DarkNetDAO.COL_TYPE, Time.class.getName());
 
 		return output;
 	}
@@ -117,5 +128,23 @@ public class Time implements DarkNetDAO {
 		builder.append(this.minute);
 		builder.append("]");
 		return builder.toString();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * net.darkowl.darkNet.darkObjects.interfaces.DarkNetDAO#hasChanged(java
+	 * .lang.Object)
+	 */
+	@Override
+	public boolean hasChanged(Object newObj) {
+		if (!(newObj instanceof Time)) {
+			LOGGER.error("You are these object have to be of the same type");
+			throw new ClassCastException("This object is not of type: "
+					+ Time.class.getName());
+		}
+		Method[] methods = Time.class.getMethods();
+		return hasChanged(methods, this, newObj);
 	}
 }

@@ -4,7 +4,7 @@
 package net.darkowl.darkNet.darkObjects.config;
 
 import net.darkowl.darkNet.darkObjects.interfaces.DarkDataStorage;
-import net.darkowl.darkNet.darkObjects.storage.DarkObjectStorage_CouchDbLite;
+import net.darkowl.darkNet.darkObjects.storage.DarkObjectStorage_MapDb;
 
 /**
  * @author Randy Blancett
@@ -22,7 +22,7 @@ public class Catalog {
 	 */
 	public static DarkDataStorage getStorageAPI() {
 		if (Catalog.storageAPI == null) {
-			Catalog.storageAPI = new DarkObjectStorage_CouchDbLite();
+			Catalog.storageAPI = new DarkObjectStorage_MapDb();
 		}
 		return Catalog.storageAPI;
 	}

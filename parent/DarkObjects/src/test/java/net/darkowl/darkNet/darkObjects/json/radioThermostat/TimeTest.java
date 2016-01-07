@@ -1,6 +1,6 @@
 package net.darkowl.darkNet.darkObjects.json.radioThermostat;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -67,12 +67,21 @@ public class TimeTest {
 		assertEquals("1", map.get(Time.COL_DAY));
 		assertEquals("2", map.get(Time.COL_HOUR));
 		assertEquals("23", map.get(Time.COL_MIN));
-		assertEquals(Time.class.toString(), map.get(Time.COL_TYPE));
+		assertEquals(Time.class.getName(), map.get(Time.COL_TYPE));
 
 		Time rebuild = new Time(map);
 		assertEquals(1, rebuild.getDay());
 		assertEquals(2, rebuild.getHour());
 		assertEquals(23, rebuild.getMinute());
+	}
 
+	@Test
+	public void testHasChanged() {
+		Time time1 = new Time(1, 4, 34);
+
+		assertFalse(time1.hasChanged(new Time(1, 4, 34)));
+		assertTrue(time1.hasChanged(new Time(2, 4, 34)));
+		assertTrue(time1.hasChanged(new Time(1, 6, 34)));
+		assertTrue(time1.hasChanged(new Time(1, 4, 35)));
 	}
 }

@@ -37,6 +37,7 @@ public class Configuration {
 	 * Location of the build info
 	 */
 	public static final String PROPERTY_BUILD_FILE_LOCATION_DARK_OBJECTS = "darkObjects.version.location";
+
 	/**
 	 * Version of the Dark Objects
 	 */
@@ -45,6 +46,11 @@ public class Configuration {
 	 * The path to the default configuration properties file
 	 */
 	public static final String PROPERTY_CONFIG_PATH = "configuration.path";
+	/**
+	 * This is the location where DB files will be located (if required for the
+	 * DB driver)
+	 */
+	public static final String PROPERTY_DB_FILE_LOCATION = "db.file.location";
 	private static final String VERSION_FILE_NAME = "/DarkObjectsVersion.info";
 
 	public static void clearProperties() {
