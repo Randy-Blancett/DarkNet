@@ -65,4 +65,10 @@ public class DarkObjectStorage_CouchDbLite extends DarkObjectStorage {
 		this.client.save(item);
 	}
 
+	@Override
+	public void remove(String id, Date key) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

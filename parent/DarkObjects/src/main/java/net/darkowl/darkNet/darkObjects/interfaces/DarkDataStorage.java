@@ -33,6 +33,15 @@ public interface DarkDataStorage {
 	Map<Date, Map<String, String>> getAll(String type);
 
 	/**
+	 * This will remove a given data item
+	 * 
+	 * @since Jan 10, 2016
+	 * @param id
+	 * @param key
+	 */
+	void remove(String id, Date key);
+
+	/**
 	 * This method is used when you only care about changes it should find the
 	 * last item of the same time, check if it is the same, If it is the same
 	 * then the old item will be deleted and this will be inserted, if it is

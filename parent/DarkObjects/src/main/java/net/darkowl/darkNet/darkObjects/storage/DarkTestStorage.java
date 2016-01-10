@@ -117,14 +117,13 @@ public class DarkTestStorage implements DarkDataStorage {
 					if (!origObj.hasChanged(oldObj)) {
 						// Orig and old are the same so we need to remove old or
 						// we would have 3 of the same value
-						typeStore.remove(old.getKey());
+						remove(id, old.getKey());
 					}
 				}
 			} catch (ClassNotFoundException | NoSuchMethodException
 					| SecurityException | InstantiationException
 					| IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -135,5 +134,10 @@ public class DarkTestStorage implements DarkDataStorage {
 	@Override
 	public void storeItem(String id, Map<String, String> item) {
 		this.getTypeStorage(id).put(new Date(), item);
+	}
+
+	@Override
+	public void remove(String id, Date key) {
+		this.getTypeStorage(id).remove(key);
 	}
 }

@@ -5,16 +5,21 @@ package net.darkowl.darkNet.darkObjects.storage;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentNavigableMap;
 
 import net.darkowl.darkNet.darkObjects.config.Configuration;
+import net.darkowl.darkNet.darkObjects.interfaces.DarkNetDAO;
+import net.darkowl.darkNet.darkObjects.util.DarkNetObjectUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.mapdb.BTreeMap;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 
@@ -77,13 +82,11 @@ public class DarkObjectStorage_MapDb extends DarkObjectStorage {
 		this.getMap(id);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Map<Date, Map<String, String>> getAll(String type) {
 		final Map<Date, Map<String, String>> data = this.getMap(type);
-		if (data != null && data instanceof HashMap) {
-			return (Map<Date, Map<String, String>>) ((HashMap<Date, Map<String, String>>) data)
-					.clone();
+		if (data != null && data instanceof BTreeMap) {
+			return new TreeMap<Date, Map<String, String>>(data);
 		}
 		return null;
 	}
@@ -101,12 +104,13 @@ public class DarkObjectStorage_MapDb extends DarkObjectStorage {
 		return this.db;
 	}
 
-	private File getDBFile() throws IOException {
+	protected File getDBFile() throws IOException {
 		if (this.dbFile == null) {
 			this.dbFile = new File(
 					Configuration
 							.getString(Configuration.PROPERTY_DB_FILE_LOCATION),
 					this.dbFileName);
+			System.out.println("DB File: " + this.dbFile.getAbsolutePath());
 			if (!this.dbFile.exists()) {
 				this.dbFile.createNewFile();
 			}
@@ -130,8 +134,54 @@ public class DarkObjectStorage_MapDb extends DarkObjectStorage {
 
 	@Override
 	public void storeChange(String id, Map<String, String> item) {
-		// TODO Auto-generated method stub
+		TreeMap<Date, Map<String, String>> typeStore = new TreeMap<Date, Map<String, String>>(
+				getMap(id));
+		if (typeStore.size() >= 2) {
+			Entry<Date, Map<String, String>> orig = null;
+			Entry<Date, Map<String, String>> old = null;
+			for (Entry<Date, Map<String, String>> data : typeStore
+					.descendingMap().entrySet()) {
+				if (old == null) {
+					old = data;
+					continue;
+				}
+				if (orig == null) {
+					orig = data;
+					continue;
+				}
 
+				break;
+			}
+
+			try {
+				DarkNetDAO oldObj = DarkNetObjectUtil.form(old.getValue());
+				DarkNetDAO newObj = DarkNetObjectUtil.form(item);
+
+				// Check if the old data stored was a change we only want to
+				// capture the first time a value showed up and the last time it
+				// showed up
+				// Check if the new and the old are the same if not then we can
+				// just add it because it is a change
+				if (!oldObj.hasChanged(newObj)) {
+					DarkNetDAO origObj = DarkNetObjectUtil
+							.form(orig.getValue());
+					// the new data and the old object is the same. WE need to
+					// see if the orig and the old are the same
+					if (!origObj.hasChanged(oldObj)) {
+						// Orig and old are the same so we need to remove old or
+						// we would have 3 of the same value
+						remove(id, old.getKey());
+					}
+				}
+			} catch (ClassNotFoundException | NoSuchMethodException
+					| SecurityException | InstantiationException
+					| IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException e) {
+				LOGGER.error("Failed to check object", e);
+			}
+
+		}
+		storeItem(id, item);
 	}
 
 	/*
@@ -145,5 +195,11 @@ public class DarkObjectStorage_MapDb extends DarkObjectStorage {
 	public void storeItem(String id, Map<String, String> item) {
 		this.getMap(id).put(new Date(), item);
 		this.db.commit();
+	}
+
+	@Override
+	public void remove(String id, Date key) {
+		Map<Date, Map<String, String>> store = this.getMap(id);
+		store.remove(key);
 	}
 }

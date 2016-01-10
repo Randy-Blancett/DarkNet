@@ -126,6 +126,17 @@ public class RadioThermostatTest {
 	}
 
 	@Test
+	public void testGetThisClass() {
+		final List<Configuration> configs = new ArrayList<Configuration>();
+		final Configuration config = new Configuration();
+		config.setKey(RestMonitoredDevice.PROPERTY_IP);
+		config.setValue("127.0.0.1:8080");
+		configs.add(config);
+		final RadioThermostat obj = new RadioThermostat("test2", configs);
+		assertEquals(RadioThermostat.class, obj.getThisClass());
+	}
+
+	@Test
 	public void testGetPropertyBoolean() {
 		final List<Configuration> configs = new ArrayList<Configuration>();
 		Configuration config = new Configuration();

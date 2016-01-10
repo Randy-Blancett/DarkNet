@@ -205,6 +205,15 @@ public class TstatTest {
 		assertFalse(obj1.hasChanged(obj2));
 		assertFalse(obj2.hasChanged(obj1));
 
+		boolean error = false;
+		try {
+			obj1.hasChanged("Hello");
+		} catch (ClassCastException e) {
+			error = true;
+		}
+
+		assertTrue(error);
+
 	}
 
 	@Test

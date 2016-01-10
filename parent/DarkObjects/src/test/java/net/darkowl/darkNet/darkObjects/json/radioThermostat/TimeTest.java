@@ -83,5 +83,20 @@ public class TimeTest {
 		assertTrue(time1.hasChanged(new Time(2, 4, 34)));
 		assertTrue(time1.hasChanged(new Time(1, 6, 34)));
 		assertTrue(time1.hasChanged(new Time(1, 4, 35)));
+
+		boolean error = false;
+		try {
+			time1.hasChanged("Hello");
+		} catch (ClassCastException e) {
+			error = true;
+		}
+
+		assertTrue(error);
+	}
+
+	@Test
+	public void testToString() {
+		Time time = new Time(1, 3, 56);
+		assertEquals("Time [day=1, hour=3, minute=56]", time.toString());
 	}
 }
