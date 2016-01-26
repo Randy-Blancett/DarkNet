@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.darkowl.darkNet.darkObjects.Output;
 import net.darkowl.darkNet.darkObjects.interfaces.DarkDevice;
 import net.darkowl.darkNet.darkObjects.xml.config.Configuration;
 
@@ -19,7 +20,9 @@ import net.darkowl.darkNet.darkObjects.xml.config.Configuration;
  * 
  */
 public abstract class BaseDarkDevice implements DarkDevice {
+	@Output
 	private final String name;
+	@Output
 	private final HashMap<String, String> properties;
 
 	public BaseDarkDevice() {

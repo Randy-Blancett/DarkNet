@@ -31,6 +31,10 @@ public class WatchConfig extends Configuration {
 	public static final String PROPERTY_BUILD_VERSION_DARK_WATCH = "darkWatch.version";
 
 	/**
+	 * The port that the rest server should start on
+	 */
+	public static final String PROPERTY_REST_SERVER_PORT = "rest.server.port";
+	/**
 	 * The location where the program can find the XML configration file;
 	 */
 	public static final String PROPERTY_XML_FILE_LOCATION = "config.xml.location";

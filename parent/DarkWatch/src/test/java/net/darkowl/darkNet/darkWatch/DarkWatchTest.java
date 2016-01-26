@@ -1,5 +1,7 @@
 package net.darkowl.darkNet.darkWatch;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -18,17 +20,14 @@ import org.junit.Test;
 public class DarkWatchTest {
 	@Before
 	public void setUp() {
-		// myOut = new ByteArrayOutputStream();
-		// origOutput = System.out;
-		// System.setOut(new PrintStream(myOut));
 		DarkWatch.kill();
+		Backer.clear();
 	}
 
 	@After
 	public void teardown() throws IOException {
-		// System.setOut(origOutput);
-		// myOut.close();
-		// myOut = null;
+		DarkWatch.stopRestServer();
+		Backer.clear();
 	}
 
 	@Test
@@ -118,10 +117,13 @@ public class DarkWatchTest {
 	@Test
 	public void testMainXmlConfig() throws IOException, ParseException,
 			DarkWatchException {
+		DarkWatch.stopRestServer();
 		boolean hasError = false;
 		// Test that if it is a null xml path we are good
 		System.setProperty(WatchConfig.PROPERTY_XML_FILE_LOCATION, "");
 		Configuration.clearProperties();
+
+		System.setProperty(WatchConfig.PROPERTY_REST_SERVER_PORT, "8045");
 		try {
 			new DarkWatch(null);
 
@@ -129,6 +131,8 @@ public class DarkWatchTest {
 			hasError = true;
 			Assert.assertEquals("You are trying to load a blank xml path",
 					e.getMessage());
+		} finally {
+			DarkWatch.stopRestServer();
 		}
 
 		Assert.assertTrue(hasError);
@@ -145,6 +149,8 @@ public class DarkWatchTest {
 			Assert.assertEquals(
 					"You are trying to load the xml config from: badXML that file location does not exist.",
 					e.getMessage());
+		} finally {
+			DarkWatch.stopRestServer();
 		}
 
 		Assert.assertTrue(hasError);
@@ -163,6 +169,8 @@ public class DarkWatchTest {
 			Assert.assertEquals("You are trying to load the xml config from: "
 					+ badXmlPath + " that File is not parseable.",
 					e.getMessage());
+		} finally {
+			DarkWatch.stopRestServer();
 		}
 
 		Assert.assertTrue(hasError);
@@ -175,5 +183,7 @@ public class DarkWatchTest {
 		System.setProperty(WatchConfig.PROPERTY_XML_FILE_LOCATION, goodXmlPath);
 		Configuration.clearProperties();
 		Assert.assertNotNull(new DarkWatch(null).getNetConfig());
+
+		assertEquals(1, Backer.getDeviceList().size());
 	}
 }

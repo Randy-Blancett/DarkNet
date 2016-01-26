@@ -3,6 +3,7 @@ package net.darkowl.darkNet.darkWatch;
 import java.util.Map;
 
 import net.darkowl.darkNet.darkObjects.interfaces.Monitorable;
+import net.darkowl.darkNet.darkObjects.xml.config.ConfigurationPropertyKeys;
 import net.darkowl.darkNet.darkWatch.exceptions.DarkWatchException;
 
 import org.apache.logging.log4j.LogManager;
@@ -20,7 +21,7 @@ public class DarkScheduler {
 	/**
 	 * This is the default number of seconds between runing the scheduled task
 	 */
-	public final static int DEFAULT_SECOND_INTERVAL = 60;
+	public final static int DEFAULT_SECOND_INTERVAL = 60 * 5;
 	private final static Logger LOGGER = LogManager
 			.getLogger(DarkScheduler.class);
 	private static Scheduler scheduler;
@@ -61,13 +62,26 @@ public class DarkScheduler {
 		if (properties != null) {
 			job.getJobDataMap().putAll(properties);
 		}
+		Integer repeatInterval = null;
+
+		if (properties != null
+				&& properties
+						.containsKey(ConfigurationPropertyKeys.INTERVAL_SECONDS
+								.getKey())) {
+			repeatInterval = Integer.parseInt(properties
+					.get(ConfigurationPropertyKeys.INTERVAL_SECONDS.getKey()));
+		}
+
+		if (repeatInterval == null) {
+			repeatInterval = DarkScheduler.DEFAULT_SECOND_INTERVAL;
+		}
 
 		final Trigger trigger = TriggerBuilder
 				.newTrigger()
 				.withIdentity(device.getDeviceName() + "Trigger", "Monitored")
 				.withSchedule(
 						SimpleScheduleBuilder
-								.repeatSecondlyForTotalCount(30, 5)).build();
+								.repeatSecondlyForever(repeatInterval)).build();
 
 		try {
 			sched.scheduleJob(job, trigger);
@@ -90,6 +104,7 @@ public class DarkScheduler {
 	public static void shutdown() throws DarkWatchException {
 		try {
 			DarkScheduler.getScheduler().shutdown();
+			DarkScheduler.scheduler = null;
 		} catch (final SchedulerException e) {
 			throw new DarkWatchException("Failed to Shutdown Scheduler", e);
 		}

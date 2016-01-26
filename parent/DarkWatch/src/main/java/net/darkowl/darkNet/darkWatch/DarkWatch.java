@@ -16,10 +16,12 @@ import javax.xml.bind.Unmarshaller;
 
 import net.darkowl.darkNet.darkObjects.config.Catalog;
 import net.darkowl.darkNet.darkObjects.config.Configuration;
+import net.darkowl.darkNet.darkObjects.devices.BaseDarkDevice;
 import net.darkowl.darkNet.darkObjects.interfaces.DarkDevice;
 import net.darkowl.darkNet.darkObjects.interfaces.Monitorable;
 import net.darkowl.darkNet.darkObjects.xml.config.Darknet;
 import net.darkowl.darkNet.darkObjects.xml.config.DeviceType;
+import net.darkowl.darkNet.darkWatch.config.RestServerConfig;
 import net.darkowl.darkNet.darkWatch.config.WatchConfig;
 import net.darkowl.darkNet.darkWatch.exceptions.DarkWatchException;
 
@@ -31,6 +33,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 
 /**
  * Main Class that will handle the monitoring of the Dark Net
@@ -42,7 +46,9 @@ import org.apache.logging.log4j.Logger;
 public class DarkWatch {
 	private final static Logger LOGGER = LogManager.getLogger(DarkWatch.class);
 	private static Options options = new Options();
+	private static HttpServer restServer = null;
 	private static boolean run = true;
+
 	static {
 		for (final CommandLineOptons option : CommandLineOptons.values()) {
 			DarkWatch.options.addOption(option.getFlag(), option.getFull(),
@@ -97,6 +103,17 @@ public class DarkWatch {
 		return deviceInstance;
 	}
 
+	private static HttpServer getRestServer() throws IllegalArgumentException,
+			IOException {
+		if (DarkWatch.restServer == null) {
+			DarkWatch.restServer = GrizzlyHttpServerFactory.createHttpServer(
+					RestServerConfig.getRestURI(), new RestServerConfig());
+			DarkWatch.LOGGER.info("Started Server at: "
+					+ RestServerConfig.getRestURI());
+		}
+		return DarkWatch.restServer;
+	}
+
 	protected static void kill() {
 		DarkWatch.run = false;
 	}
@@ -130,6 +147,17 @@ public class DarkWatch {
 		DarkWatch.LOGGER.info(WatchConfig.getVersionString());
 	}
 
+	public static void startRestServer() throws IllegalArgumentException,
+			IOException {
+		DarkWatch.getRestServer().start();
+	}
+
+	public static void stopRestServer() throws IllegalArgumentException,
+			IOException {
+		DarkWatch.getRestServer().shutdown();
+		DarkWatch.restServer = null;
+	}
+
 	private Darknet netConfig = null;
 
 	/**
@@ -156,6 +184,8 @@ public class DarkWatch {
 			DarkWatch.printVersion();
 			return;
 		}
+
+		DarkWatch.startRestServer();
 
 		this.loadXmlConfig(Configuration
 				.getString(WatchConfig.PROPERTY_XML_FILE_LOCATION));
@@ -188,6 +218,7 @@ public class DarkWatch {
 		if (this.netConfig.getDevices() == null) {
 			return;
 		}
+		final List<BaseDarkDevice> devices = Backer.getDeviceList();
 		for (final DeviceType deviceInfo : this.netConfig.getDevices()
 				.getDevice()) {
 			DarkDevice device;
@@ -200,6 +231,7 @@ public class DarkWatch {
 							deviceInfo.getName(), deviceInfo
 									.getConfigurations().getConfiguration());
 				}
+				devices.add((BaseDarkDevice) device);
 				if (device instanceof Monitorable) {
 					DarkScheduler.schedule((Monitorable) device,
 							device.getProperties());

@@ -71,6 +71,23 @@ public class Configuration {
 	}
 
 	/**
+	 * Get a property as an Integer
+	 * 
+	 * @since Jan 15, 2016
+	 * @param property
+	 * @return
+	 */
+	public static Integer getInteger(String property) {
+		String rawData = Configuration.properties.getProperty(property);
+		try {
+			return Integer.parseInt(rawData);
+		} catch (NumberFormatException e) {
+			LOGGER.error("Failed to parse: " + rawData, e);
+			return 0;
+		}
+	}
+
+	/**
 	 * Get a string holding the version information
 	 * 
 	 * @since Oct 31, 2015
@@ -247,7 +264,7 @@ public class Configuration {
 	 * @param overwrite
 	 *            overwrite if value is not null
 	 */
-	protected static void setProp(String key, String value, boolean overwrite) {
+	public static void setProp(String key, String value, boolean overwrite) {
 		if (overwrite || Configuration.properties.get(key) == null) {
 			Configuration.properties.setProperty(key, value);
 		}
